@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoResearch — Autonomous Multi-Agent Research Assistant</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Marked Markdown Parser -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Left Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fa-solid fa-atom logo-icon"></i>
+                    <span>AutoResearch</span>
+                </div>
+                <button class="icon-btn new-research-btn" id="newResearchBtn" title="New Research Session">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </div>
+
+            <!-- Upload Document Section -->
+            <div class="doc-upload-card">
+                <div class="card-title">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span>Document Context (Optional)</span>
+                </div>
+                <p class="card-subtext">Upload PDF/TXT for vector document search</p>
+                
+                <input type="file" id="docFileInput" accept=".pdf,.txt,.md" style="display: none;">
+                <button class="btn btn-secondary upload-trigger-btn" id="uploadTriggerBtn">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                    <span id="uploadBtnText">Upload Document</span>
+                </button>
+                <div class="doc-badge hidden" id="docBadge">
+                    <i class="fa-solid fa-file-lines"></i>
+                    <span id="docBadgeName">document.pdf</span>
+                    <button class="remove-doc-btn" id="removeDocBtn">&times;</button>
+                </div>
+            </div>
+
+            <!-- Session History List -->
+            <div class="history-section">
+                <div class="history-header">
+                    <span>Research History</span>
+                    <button class="icon-btn refresh-btn" id="refreshHistoryBtn" title="Refresh History">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                </div>
+                <div class="history-list" id="historyList">
+                    <div class="empty-history">No past sessions found</div>
+                </div>
+            </div>
+
+            <!-- AWS Storage Footer -->
+            <div class="sidebar-footer">
+                <div class="aws-status">
+                    <i class="fa-solid fa-cloud-bolt"></i>
+                    <span>Powered by Groq, LangGraph & AWS (DynamoDB/S3)</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Workspace -->
+        <main class="main-content">
+            <!-- Header Bar -->
+            <header class="top-bar">
+                <button class="icon-btn toggle-sidebar-btn" id="toggleSidebarBtn">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <div class="session-info">
+                    <h2 id="currentTopicTitle">Autonomous Multi-Agent Studio</h2>
+                    <span class="status-chip" id="sessionStatusChip">Idle</span>
+                </div>
+                <div class="top-bar-actions">
+                    <button class="btn btn-primary hidden" id="downloadReportBtn">
+                        <i class="fa-solid fa-download"></i> Download Report (S3)
+                    </button>
+                </div>
+            </header>
+
+            <!-- Research Input Studio -->
+            <section class="research-input-container">
+                <div class="input-card">
+                    <label for="topicInput" class="input-label">What topic would you like AutoResearch to investigate?</label>
+                    <div class="input-wrapper">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" id="topicInput" placeholder="e.g. Impact of Quantum Computing on Modern Cryptography" autocomplete="off">
+                        <button class="btn btn-accent" id="startResearchBtn">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Start Research</span>
+                        </button>
+                    </div>
+                    <div class="quick-tags">
+                        <span class="tag-label">Try asking:</span>
+                        <button class="tag-btn">Agentic Workflows in AI</button>
+                        <button class="tag-btn">Post-Quantum Cryptography</button>
+                        <button class="tag-btn">Solid State Battery Innovations</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Live Agentic Reasoning Timeline -->
+            <section class="timeline-container hidden" id="timelineContainer">
+                <h3 class="section-title">
+                    <i class="fa-solid fa-network-wired"></i>
+                    <span>Agent Workflow Timeline</span>
+                </h3>
+                <div class="timeline" id="agentTimeline">
+                    <!-- Dynamic step items generated by app.js -->
+                </div>
+            </section>
+
+            <!-- Markdown Report Viewer -->
+            <section class="report-container hidden" id="reportContainer">
+                <div class="report-header">
+                    <h3><i class="fa-solid fa-file-contract"></i> Synthesized Research Report</h3>
+                    <div class="report-actions">
+                        <button class="btn btn-small" id="copyReportBtn"><i class="fa-regular fa-copy"></i> Copy Markdown</button>
+                    </div>
+                </div>
+                <div class="report-body markdown-body" id="reportBody">
+                    <!-- Rendered markdown content -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+</html>

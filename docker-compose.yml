@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  autoresearch-agent:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: autoresearch_agent_app
+    ports:
+      - "8000:8000"
+    environment:
+      - GROQ_API_KEY=${GROQ_API_KEY}
+      - TAVILY_API_KEY=${TAVILY_API_KEY}
+      - GROQ_MODEL=${GROQ_MODEL:-llama-3.3-70b-versatile}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+      - AWS_REGION=${AWS_REGION:-ap-south-1}
+      - DYNAMODB_TABLE_NAME=${DYNAMODB_TABLE_NAME:-autoresearch-sessions}
+      - S3_BUCKET_NAME=${S3_BUCKET_NAME:-autoresearch-reports}
+      - PORT=8000
+      - HOST=0.0.0.0
+    volumes:
+      - ./backend/data:/app/backend/data
+    restart: unless-stopped
