@@ -20,7 +20,6 @@ from backend.app.storage import (
     delete_session,
     generate_report_download_url
 )
-from backend.app.vector_store import process_and_index_document
 
 app = FastAPI(
     title="AutoResearch Agent API",
@@ -57,6 +56,7 @@ def read_root():
 async def upload_document(file: UploadFile = File(...)):
     """
     Upload PDF or TXT document, extract text chunks, and index into FAISS vector store.
+    Lazy-imports process_and_index_document to conserve memory until a user uploads a file.
     """
     ext = Path(file.filename).suffix.lower()
     if ext not in [".pdf", ".txt", ".md"]:
@@ -72,6 +72,7 @@ async def upload_document(file: UploadFile = File(...)):
         with open(temp_path, "wb") as f:
             f.write(content)
 
+        from backend.app.vector_store import process_and_index_document
         result = process_and_index_document(str(temp_path), doc_session_id)
         return {
             "status": "success",

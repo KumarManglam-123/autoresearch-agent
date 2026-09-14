@@ -3,7 +3,6 @@ from typing import List, Dict, Any, Optional
 from tavily import TavilyClient
 
 from backend.app.config import TAVILY_API_KEY
-from backend.app.vector_store import search_documents
 
 # Tavily Client initialization
 def get_tavily_client() -> Optional[TavilyClient]:
@@ -55,7 +54,15 @@ def execute_web_search(query: str) -> Dict[str, Any]:
 def execute_document_search(query: str, doc_session_id: str) -> Dict[str, Any]:
     """
     Executes document similarity search in FAISS for doc_session_id.
+    Lazy-imports search_documents only when a document session is active.
     """
+    if not doc_session_id:
+        return {
+            "content": "No document session provided for document search.",
+            "sources": []
+        }
+
+    from backend.app.vector_store import search_documents
     doc_results = search_documents(query=query, doc_session_id=doc_session_id, k=4)
     if not doc_results:
         return {
