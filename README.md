@@ -4,6 +4,13 @@
 
 ---
 
+## 🔗 Live Demo
+**[https://autoresearch-agent-zu3q.onrender.com](https://autoresearch-agent-zu3q.onrender.com)**
+
+> Note: Hosted on Render's free tier. The first request may take 30-60 seconds to wake up from an idle state. Some longer-running research queries may occasionally hit the free tier's 512MB memory limit — an instance upgrade would resolve this for production use.
+
+---
+
 ## 🏗 System Architecture & Multi-Agent Loop
 
 AutoResearch is orchestrated as a state machine using **LangGraph**. The workflow cycles through four specialized agent nodes with a strict self-critique retry loop capped at 2 iterations to avoid infinite loops:
@@ -56,12 +63,12 @@ AutoResearch is orchestrated as a state machine using **LangGraph**. The workflo
 
 - **Backend Framework:** FastAPI (Python 3.12)
 - **Agent Orchestration:** LangGraph (`StateGraph`, conditional edges)
-- **LLM Engine:** Groq API (`llama-3.3-70b-versatile` via `langchain-groq`)
+- **LLM Engine:** Groq API (`openai/gpt-oss-20b` / `llama-3.3-70b-versatile` via `langchain-groq`)
 - **Web Search Tool:** Tavily API
 - **Document Vector Store:** FAISS + HuggingFace Embeddings (`sentence-transformers/all-MiniLM-L6-v2`) + PyPDF
 - **Cloud Infrastructure (AWS):**
   - **Amazon DynamoDB:** Persistent session history table (`autoresearch-sessions`)
-  - **Amazon S3:** Markdown report file storage (`autoresearch-reports`) with pre-signed download URLs
+  - **Amazon S3:** Markdown report file storage with pre-signed download URLs
 - **Real-Time Streaming:** Server-Sent Events (SSE via `sse-starlette`)
 - **Frontend:** Vanilla HTML5, CSS3, JavaScript (ES6+), FontAwesome, and `marked.js`
 - **Containerization:** Docker & Docker Compose
@@ -87,13 +94,13 @@ Update your credentials in `.env`:
 ```env
 GROQ_API_KEY=gsk_your_groq_api_key
 TAVILY_API_KEY=tvly-your_tavily_api_key
-GROQ_MODEL=llama-3.3-70b-versatile
+GROQ_MODEL=openai/gpt-oss-20b
 
 AWS_ACCESS_KEY_ID=your_aws_access_key
 AWS_SECRET_ACCESS_KEY=your_aws_secret_key
 AWS_REGION=ap-south-1
 DYNAMODB_TABLE_NAME=autoresearch-sessions
-S3_BUCKET_NAME=autoresearch-reports
+S3_BUCKET_NAME=your-unique-bucket-name # Choose a globally unique name, e.g. autoresearch-reports-yourname
 ```
 
 ### 3. Local Installation & Setup
@@ -147,7 +154,7 @@ When configuring an IAM User/Role for AutoResearch, attach a restricted inline p
         "s3:GetObject",
         "s3:DeleteObject"
       ],
-      "Resource": "arn:aws:s3:::autoresearch-reports/*"
+      "Resource": "arn:aws:s3:::your-unique-bucket-name/*"
     }
   ]
 }
